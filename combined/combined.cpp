@@ -20,8 +20,6 @@ using namespace std;
 #ifndef GRAPH_H
 #define GRAPH_H
 
-
-
 class Graph {
 public:
     Graph() : vertices_(), graph_(), number_vertices_(0) {}
@@ -324,7 +322,7 @@ void join_threads() {
 
 void print_betweenness() {
 
-    double mn = 2e9, mx = 0;
+    double mn = 1e12, mx = 0;
     for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
             mn = min(mn, betweenness[vertex]);
             mx = max(mx, betweenness[vertex]);
@@ -332,11 +330,11 @@ void print_betweenness() {
     cout << fixed << setprecision(2);
     cout << '[';
     for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
-        if (graph.has_out_edges(vertex)) {
+        // if (graph.has_out_edges(vertex)) {
             cout << '(' << graph.get_real_vertex(vertex) << ',' << (double)(betweenness[vertex] - mn) / (mx- mn) << ')';
             if (vertex + 1 != graph.get_number_vertices())
                 cout << ',';
-        }
+        // }
     }
     cout << ']';
 }
@@ -351,6 +349,5 @@ int main(int argc, char *argv[]) {
     join_threads();
 
     print_betweenness();
-
     return 0;
 }
