@@ -1,0 +1,1 @@
+g++ -std=c++14 combined.cpp -O3 -o combine
