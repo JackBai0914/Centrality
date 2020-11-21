@@ -13,12 +13,13 @@
 #include <vector>
 #include <stack>
 #include <ctime>
-
 using namespace std;
 
+const double eps = 1e-6;
 /////////////GRAPH////////////////
 #ifndef GRAPH_H
 #define GRAPH_H
+
 
 class Graph {
 public:
@@ -331,7 +332,7 @@ void print_betweenness() {
     cout << '[';
     for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
         // if (graph.has_out_edges(vertex)) {
-            cout << '(' << graph.get_real_vertex(vertex) << ',' << (double)(betweenness[vertex] - mn) / (mx- mn) << ')';
+            cout << '(' << graph.get_real_vertex(vertex) << ',' << 0.01 * (int)((betweenness[vertex] - mn + eps) * 100 / (mx- mn) + 0.5) << ')';
             if (vertex + 1 != graph.get_number_vertices())
                 cout << ',';
         // }
