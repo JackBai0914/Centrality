@@ -15,7 +15,8 @@
 #include <ctime>
 using namespace std;
 
-const double eps = 1e-6;
+typedef long double ld;
+const ld eps = 1e-9;
 /////////////GRAPH////////////////
 #ifndef GRAPH_H
 #define GRAPH_H
@@ -30,7 +31,7 @@ public:
             vertices_.insert(vertex);
             orderable_vertices_.push_back(vertex);
 
-            graph_.push_back(std::vector<int>());
+            graph_.push_back(vector<int>());
             has_out_edges_.push_back(false);
             number_vertices_++;
         }
@@ -50,7 +51,7 @@ public:
         return number_vertices_;
     }
 
-    const std::vector<int>& get_neighbors(int vertex) const {
+    const vector<int>& get_neighbors(int vertex) const {
         return graph_[vertex];
     }
 
@@ -62,15 +63,15 @@ public:
         return orderable_vertices_[vertex];
     }
 private:
-    std::unordered_set<int> vertices_;
-    std::vector<int> orderable_vertices_;
-    std::vector<std::vector<int>> graph_;
-    std::vector<bool> has_out_edges_;
-    std::unordered_map<int, int> mapped_to_;
+    unordered_set<int> vertices_;
+    vector<int> orderable_vertices_;
+    vector<vector<int>> graph_;
+    vector<bool> has_out_edges_;
+    unordered_map<int, int> mapped_to_;
     int number_vertices_;
 
     void sort_vertices_() {
-        std::sort(orderable_vertices_.begin(), orderable_vertices_.end());
+        sort(orderable_vertices_.begin(), orderable_vertices_.end());
     }
 
     void map_vertices_() {
@@ -126,7 +127,7 @@ public:
         while(inputchar() != ']') {
             read(u, v);
             // cerr << "input: " << u << " " << v << endl;
-            edges_.push_back(std::pair<int, int>(u, v));
+            edges_.push_back(pair<int, int>(u, v));
         }
         add_vertices_();
         add_edges_();
@@ -137,9 +138,9 @@ public:
     }
 private:
     Graph graph_;
-    std::vector<std::pair<int, int>> edges_;
+    vector<pair<int, int>> edges_;
 
-    void parse_edge_(std::string edge) {
+    void parse_edge_(string edge) {
         stringstream sstream(edge);
 
         string s;
@@ -148,7 +149,7 @@ private:
         int from, to;
         sstream >> from >> to;
 
-        edges_.push_back(std::pair<int, int>(from, to));
+        edges_.push_back(pair<int, int>(from, to));
     }
 
     void add_vertices_() {
@@ -182,19 +183,19 @@ public:
         calculate_dependencies_();
     }
 
-    double get_dependency(int vertex) const {
+    ld get_dependency(int vertex) const {
         return dependency_[vertex];
     }
 private:
     const Graph& graph_; // (V, E)
     int vertex_; // s
 
-    std::stack<int> stack_; // S
-    std::vector<std::vector<int>> shortest_path_predecessors_; // P
-    std::vector<int> shortest_paths_; // sigma
-    std::vector<int> distance_; // d
-    std::queue<int> queue_; // Q
-    std::vector<double> dependency_; // delta
+    stack<int> stack_; // S
+    vector<vector<int>> shortest_path_predecessors_; // P
+    vector<int> shortest_paths_; // sigma
+    vector<int> distance_; // d
+    queue<int> queue_; // Q
+    vector<ld> dependency_; // delta
 
     void init_() {
         for (int vertex = 0; vertex < graph_.get_number_vertices(); vertex++) {
@@ -235,9 +236,9 @@ private:
             stack_.pop();
 
             for (int predecessor : shortest_path_predecessors_[vertex]) {
-                double shortest_path_ratio =
-                    (double) shortest_paths_[predecessor] /
-                    (double) shortest_paths_[vertex];
+                ld shortest_path_ratio =
+                    (ld) shortest_paths_[predecessor] /
+                    (ld) shortest_paths_[vertex];
                 dependency_[predecessor] +=
                     shortest_path_ratio * (1 + dependency_[vertex]);
             }
@@ -253,16 +254,16 @@ private:
 int threads;
 
 Graph graph;
-std::vector<double> betweenness;
-std::queue<int> vertices_to_process;
+vector<ld> betweenness;
+queue<int> vertices_to_process;
 
-std::vector<std::thread> threads_list;
-std::mutex queue_mutex;
-std::mutex betweenness_mutex;
+vector<thread> threads_list;
+mutex queue_mutex;
+mutex betweenness_mutex;
 
 void parse_args(int argc, char *argv[]) {
     // cerr << "have the numbers: " << argv[1] << endl;
-    threads = std::stoi(argv[1]);
+    threads = stoi(argv[1]);
 }
 
 void parse_input() {
@@ -278,7 +279,7 @@ void init() {
 }
 
 int next_vertex() {
-    std::lock_guard<std::mutex> lock(queue_mutex);
+    lock_guard<mutex> lock(queue_mutex);
 
     if (vertices_to_process.empty()) {
         return -1;
@@ -291,11 +292,11 @@ int next_vertex() {
 }
 
 void update_betweenness(int vertex, DependencyCalculator& dc) {
-    std::lock_guard<std::mutex> lock(betweenness_mutex);
+    lock_guard<mutex> lock(betweenness_mutex);
 
     for (int v = 0; v < graph.get_number_vertices(); v++) {
         if (v != vertex) {
-            double pans = dc.get_dependency(v);
+            ld pans = dc.get_dependency(v);
             betweenness[v] += pans;
         }
     }
@@ -316,14 +317,14 @@ void launch_threads() {
 }
 
 void join_threads() {
-    for (std::thread& thread : threads_list) {
+    for (thread& thread : threads_list) {
         thread.join();
     }
 }
 
 void print_betweenness() {
 
-    double mn = 1e12, mx = 0;
+    ld mn = 1e12, mx = 0;
     for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
             mn = min(mn, betweenness[vertex]);
             mx = max(mx, betweenness[vertex]);
@@ -331,11 +332,10 @@ void print_betweenness() {
     cout << fixed << setprecision(2);
     cout << '[';
     for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
-        // if (graph.has_out_edges(vertex)) {
-            cout << '(' << graph.get_real_vertex(vertex) << ',' << 0.01 * (int)((betweenness[vertex] - mn + eps) * 100 / (mx- mn) + 0.5) << ')';
-            if (vertex + 1 != graph.get_number_vertices())
-                cout << ',';
-        // }
+        ld ans = (betweenness[vertex] - mn) / (mx - mn) + eps;
+        cout << '(' << graph.get_real_vertex(vertex) << ',' << 0.01 * round(ans * 100) << ')';
+        if (vertex + 1 != graph.get_number_vertices())
+            cout << ',';
     }
     cout << ']';
 }
