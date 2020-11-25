@@ -1,3 +1,0 @@
-/Users/jackbai/Desktop/并行计算/Centrality/build/CMakeFiles/rebuild_cache.dir
-/Users/jackbai/Desktop/并行计算/Centrality/build/CMakeFiles/edit_cache.dir
-/Users/jackbai/Desktop/并行计算/Centrality/build/CMakeFiles/brandes.dir
