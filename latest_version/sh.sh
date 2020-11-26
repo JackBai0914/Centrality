@@ -1,12 +1,12 @@
-./brute 1 >ans.txt <$1
-./brute 2 >ans.txt <$1
-./brute 4 >ans.txt <$1
-./brute 8 >ans.txt <$1
-./brute 16 >ans.txt <$1
-./brute 24 >ans.txt <$1
-./brute 30 >ans.txt <$1
-./brute 32 >ans.txt <$1
-./brute 48 >ans.txt <$1
-./brute 64 >ans.txt <$1
-./brute 72 >ans.txt <$1
-./brute 96 >ans.txt <$1
+time ./brute 1 >ans.txt <$1
+time ./brute 2 >ans.txt <$1
+time ./brute 4 >ans.txt <$1
+time ./brute 8 >ans.txt <$1
+time ./brute 16 >ans.txt <$1
+time ./brute 24 >ans.txt <$1
+time ./brute 30 >ans.txt <$1
+time ./brute 32 >ans.txt <$1
+time ./brute 48 >ans.txt <$1
+time ./brute 64 >ans.txt <$1
+time ./brute 72 >ans.txt <$1
+time ./brute 96 >ans.txt <$1
