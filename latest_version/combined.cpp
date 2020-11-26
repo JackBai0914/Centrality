@@ -332,7 +332,7 @@ void print_betweenness() {
     printf("[");
     for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
         ld ans = (betweenness[vertex] - mn) / (mx - mn) + eps;
-        printf("(%d,%.2Lf)", graph.get_real_vertex(vertex), 0.01 * round(ans * 100));
+        printf("(%d,%.2f)", graph.get_real_vertex(vertex), 0.01 * round(ans * 100));
         if (vertex + 1 != graph.get_number_vertices())
             cout << ',';
     }
@@ -348,6 +348,6 @@ int main(int argc, char *argv[]) {
     launch_threads();
     join_threads();
 
-    print_betweenness();
+    // print_betweenness();
     return 0;
 }

@@ -1,1 +1,2 @@
-./combine 96 >ans.txt <$1
+./brute 1 >ans.txt <$1
+# ./combine 48 >ans.txt <$1
