@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i <= n; i ++)
         chkmax(bg, betweenness[i]);
     
-    // cerr << TIME << endl;
+    cerr << TIME << endl;
     printf("[");
     for (int i = 1; i <= n; i ++)
         if (exi[i]) {
