@@ -15,7 +15,7 @@
 #include <ctime>
 #define pb push_back
 #define il inline
-#define MAXN 20020
+#define MAXN 10010
 #define eps (1e-6)
 #define TIME (double)clock()/CLOCKS_PER_SEC
 using namespace std;
@@ -59,7 +59,6 @@ int n, m;
 bool exi[MAXN];
 vector<int> adj[MAXN];
 double betweenness[MAXN];
-
 
 
 struct Dependency_Calc {
@@ -153,6 +152,9 @@ int main(int argc, char *argv[]) {
         chkmax(n, v);
     }
 
+    cerr << "N:" << n << endl;
+    cerr << TIME << endl;
+
     launch_threads();
 
     for (thread& th : threads_list)
@@ -163,7 +165,7 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i <= n; i ++)
         chkmax(bg, betweenness[i]);
     
-    cerr << TIME << endl;
+    // cerr << TIME << endl;
     printf("[");
     for (int i = 1; i <= n; i ++)
         if (exi[i]) {
