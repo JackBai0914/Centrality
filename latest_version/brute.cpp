@@ -141,6 +141,7 @@ void launch_threads() {
 
 
 int main(int argc, char *argv[]) {
+    cerr << fixed << setprecision(6);
     thread_num = stoi(argv[1]);
 
     int mxp = 0, nump = 0, cnt = 0;
