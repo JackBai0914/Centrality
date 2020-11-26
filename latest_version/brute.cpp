@@ -64,7 +64,7 @@ struct Dependency_Calc {
 
     vector <double> _d, path;
     vector <int> st, q, dis;
-    vector <vector<int> > pred;    
+    vector <int > pred[MAXN];    
     
     Dependency_Calc() {}
     Dependency_Calc(int _s) {bfs(_s);}
