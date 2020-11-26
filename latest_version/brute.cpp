@@ -15,7 +15,7 @@
 #include <ctime>
 #define pb push_back
 #define il inline
-#define MAXN 10010
+#define MAXN 20020
 #define eps (1e-6)
 #define TIME (double)clock()/CLOCKS_PER_SEC
 using namespace std;
@@ -60,11 +60,13 @@ bool exi[MAXN];
 vector<int> adj[MAXN];
 double betweenness[MAXN];
 
+
+
 struct Dependency_Calc {
 
     vector <double> _d, path;
     vector <int> st, q, dis;
-    vector <int > pred[MAXN];    
+    vector <int> pred[MAXN];    
     
     Dependency_Calc() {}
     Dependency_Calc(int _s) {bfs(_s);}
@@ -75,14 +77,12 @@ struct Dependency_Calc {
         st.resize(n+1);
         q.resize(n+1);
         dis.resize(n+1);
-        for (int i = 0; i <= n; i ++) {
-            dis[i] = n + 1;
-            // pred.emplace_back();
-        }
-        int fr = 1, re = 0, tp = 0, u;
+        for (int i = 1; i <= n; i ++)
+            _d[i] = path[i] = 0, dis[i] = n + 1;
+        int fr = 1, re = 0, tp = 0;
         q[++re] = s, dis[s] = 0, path[s] = 1;
         while(fr <= re) {
-            u = q[fr++];
+            int u = q[fr++];
             st[++tp] = u;
             for(int v: adj[u]) {
                 if(dis[v] > n) dis[v] = dis[u] + 1, q[++re] = v;
@@ -90,8 +90,8 @@ struct Dependency_Calc {
             }
         }
         while(tp) {
-            u = st[tp--];
-            for(int v: pred[u])
+            int u = st[tp--];
+            for(int v: pred[u]) 
                 _d[v] += path[v] / path[u] * (1 + _d[u]);
         }
     }
@@ -118,9 +118,8 @@ void update_betweenness(Dependency_Calc& dc, int s) {
     lock_guard<mutex> lock(betweenness_mutex);
 
     for (int v = 1; v <= n; v ++) {
-        if (v != s) {
+        if (v != s)
             betweenness[v] += dc._d[v];
-        }
     }
 }
 
@@ -132,6 +131,7 @@ void launch_threads() {
         threads_list.emplace_back([&] () {
             int vertex = next_vertex();
             while(vertex != -1) {
+                // cerr << "calc::: " << tid << " " << vertex << endl;
                 Dependency_Calc dc(vertex);
                 update_betweenness(dc, vertex);
                 vertex = next_vertex();
@@ -152,9 +152,6 @@ int main(int argc, char *argv[]) {
         chkmax(n, u);
         chkmax(n, v);
     }
-
-    // cerr << "N:" << n << endl;
-    // cerr << TIME << endl;
 
     launch_threads();
 
