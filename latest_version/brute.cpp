@@ -60,22 +60,24 @@ bool exi[MAXN];
 vector<int> adj[MAXN];
 double betweenness[MAXN];
 
+int ST[50][MAXN];
 
 struct Dependency_Calc {
 
     vector <double> _d, path;
     vector <int> st, q, dis;
-    vector <int> pred[MAXN];    
+    vector <vector<int> > pred;    
     
     Dependency_Calc() {}
-    Dependency_Calc(int _s) {bfs(_s);}
+    Dependency_Calc(int _s, int tid) {bfs(_s, ST[tid]);}
 
-    void bfs(int s) {
+    void bfs(int s, int *st) {
         _d.resize(n+1);
         path.resize(n+1);
-        st.resize(n+1);
+        // st.resize(n+1);
         q.resize(n+1);
         dis.resize(n+1);
+        pred.resize(n+1);
         for (int i = 1; i <= n; i ++)
             _d[i] = path[i] = 0, dis[i] = n + 1;
         int fr = 1, re = 0, tp = 0;
@@ -127,11 +129,12 @@ void launch_threads() {
         if (exi[i])
             allpt.push_back(i);
     for (int i = 0; i < thread_num; i++) {
+        int tid = i;
         threads_list.emplace_back([&] () {
             int vertex = next_vertex();
             while(vertex != -1) {
                 // cerr << "calc::: " << tid << " " << vertex << endl;
-                Dependency_Calc dc(vertex);
+                Dependency_Calc dc(vertex, tid);
                 update_betweenness(dc, vertex);
                 vertex = next_vertex();
             }
