@@ -76,7 +76,6 @@ struct Dependency_Calc {
         q.resize(n+1);
         dis.resize(n+1);
         for (int i = 0; i <= n; i ++) {
-            dis.push_back(n+1);
             pred.emplace_back();
         }
         int fr = 1, re = 0, tp = 0, u;
