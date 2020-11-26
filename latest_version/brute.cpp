@@ -67,7 +67,7 @@ struct Dependency_Calc {
     vector <vector<int> > pred;    
     
     Dependency_Calc() {}
-    Dependency_Calc(int _s, int tid) {bfs(_s);}
+    Dependency_Calc(int _s) {bfs(_s);}
 
     void bfs(int s) {
         _d.resize(n+1);
@@ -75,10 +75,8 @@ struct Dependency_Calc {
         st.resize(n+1);
         q.resize(n+1);
         pred.resize(n+1);
-        dis.resize(n+1);
-        pred.resize(n+1);
         for (int i = 0; i <= n; i ++) {
-            dis[i] = n + 1;
+            // dis[i] = n + 1;
             // pred.emplace_back();
         }
         int fr = 1, re = 0, tp = 0, u;
@@ -131,11 +129,10 @@ void launch_threads() {
         if (exi[i])
             allpt.push_back(i);
     for (int i = 0; i < thread_num; i++) {
-        int tid = i;
         threads_list.emplace_back([&] () {
             int vertex = next_vertex();
             while(vertex != -1) {
-                Dependency_Calc dc(vertex, tid);
+                Dependency_Calc dc(vertex);
                 update_betweenness(dc, vertex);
                 vertex = next_vertex();
             }
@@ -156,8 +153,8 @@ int main(int argc, char *argv[]) {
         chkmax(n, v);
     }
 
-    cerr << "N:" << n << endl;
-    cerr << TIME << endl;
+    // cerr << "N:" << n << endl;
+    // cerr << TIME << endl;
 
     launch_threads();
 
@@ -169,7 +166,7 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i <= n; i ++)
         chkmax(bg, betweenness[i]);
     
-    cerr << TIME << endl;
+    // cerr << TIME << endl;
     printf("[");
     for (int i = 1; i <= n; i ++)
         if (exi[i]) {
