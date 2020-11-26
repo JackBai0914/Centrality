@@ -79,21 +79,21 @@ struct Dependency_Calc {
             dis[i] = n + 1;
             // pred.emplace_back();
         }
-        int fr = 1, re = 0, tp = 0, u;
-        q[++re] = s, dis[s] = 0, path[s] = 1;
-        while(fr <= re) {
-            u = q[fr++];
-            st[++tp] = u;
-            for(int v: adj[u]) {
-                if(dis[v] > n) dis[v] = dis[u] + 1, q[++re] = v;
-                if(dis[v] == dis[u] + 1) path[v] += path[u], pred[v].pb(u);
-            }
-        }
-        while(tp) {
-            u = st[tp--];
-            for(int v: pred[u])
-                _d[v] += path[v] / path[u] * (1 + _d[u]);
-        }
+        // int fr = 1, re = 0, tp = 0, u;
+        // q[++re] = s, dis[s] = 0, path[s] = 1;
+        // while(fr <= re) {
+        //     u = q[fr++];
+        //     st[++tp] = u;
+        //     for(int v: adj[u]) {
+        //         if(dis[v] > n) dis[v] = dis[u] + 1, q[++re] = v;
+        //         if(dis[v] == dis[u] + 1) path[v] += path[u], pred[v].pb(u);
+        //     }
+        // }
+        // while(tp) {
+        //     u = st[tp--];
+        //     for(int v: pred[u])
+        //         _d[v] += path[v] / path[u] * (1 + _d[u]);
+        // }
     }
 };
 
