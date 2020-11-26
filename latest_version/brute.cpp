@@ -71,13 +71,13 @@ struct Dependency_Calc {
 
     void bfs(int s) {
         for (int i = 0; i <= n; i ++) {
-            _d.push_back(0);
-            path.push_back(0);
-            st.push_back(0);
-            q.push_back(0);
-            dis.push_back(n+1);
+            _d.emplace_back(0);
+            path.emplace_back(0);
+            st.emplace_back(0);
+            q.emplace_back(0);
+            dis.emplace_back(n+1);
             pred.emplace_back();
-            dis.push_back(0);
+            dis.emplace_back(0);
         }
         int fr = 1, re = 0, tp = 0, u;
         q[++re] = s, dis[s] = 0, path[s] = 1;
