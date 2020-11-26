@@ -16,7 +16,6 @@
 #define pb push_back
 #define il inline
 #define MAXN 20020
-#define eps (1e-6)
 #define TIME (double)clock()/CLOCKS_PER_SEC
 using namespace std;
 template <typename T> il bool chkmin(T &x, T y) {return x > y ? x = y, 1 : 0;}
@@ -55,11 +54,11 @@ namespace IO_opt {
     #undef I_int
 } using namespace IO_opt;
 
+
 int n, m;
 bool exi[MAXN];
 vector<int> adj[MAXN];
 double betweenness[MAXN];
-
 
 
 struct Dependency_Calc {
@@ -144,26 +143,37 @@ void launch_threads() {
 int main(int argc, char *argv[]) {
     thread_num = stoi(argv[1]);
 
+    int mxp = 0, nump = 0, cnt = 0;
+
     int u, v;
     while(inputchar() != ']') {
         read(u, v), ++u, ++v;
+        cnt ++;
+        nump += (exi[u] == false);
+        nump += (exi[v] == false);
         exi[u] = exi[v] = true;
         adj[u].pb(v);
         chkmax(n, u);
         chkmax(n, v);
     }
+    mxp = n;
+
+    cerr << "after input: " << TIME << endl;
 
     launch_threads();
 
     for (thread& th : threads_list)
         th.join();
+    cerr << "after calculation: " << TIME << endl;
 
 
     double bg = 0;
     for (int i = 1; i <= n; i ++)
         chkmax(bg, betweenness[i]);
     
-    cerr << TIME << endl;
+    cerr << "running time: " << TIME << endl;
+    cerr << "data report: " << mxp << ", " << nump << ", " << cnt << endl;
+    
     printf("[");
     for (int i = 1; i <= n; i ++)
         if (exi[i]) {
