@@ -74,8 +74,9 @@ struct Dependency_Calc {
         path.resize(n+1);
         st.resize(n+1);
         q.resize(n+1);
-        dis.resize(n+1);
+        pred.resize(n+1);
         for (int i = 0; i <= n; i ++) {
+            dis.push_back(n+1);
             pred.emplace_back();
         }
         int fr = 1, re = 0, tp = 0, u;
@@ -90,7 +91,7 @@ struct Dependency_Calc {
         }
         while(tp) {
             u = st[tp--];
-            for(int v: pred[u]) 
+            for(int v: pred[u])
                 _d[v] += path[v] / path[u] * (1 + _d[u]);
         }
     }
@@ -117,8 +118,9 @@ void update_betweenness(Dependency_Calc& dc, int s) {
     lock_guard<mutex> lock(betweenness_mutex);
 
     for (int v = 1; v <= n; v ++) {
-        if (v != s)
+        if (v != s) {
             betweenness[v] += dc._d[v];
+        }
     }
 }
 
@@ -131,7 +133,6 @@ void launch_threads() {
         threads_list.emplace_back([&] () {
             int vertex = next_vertex();
             while(vertex != -1) {
-                // cerr << "calc::: " << tid << " " << vertex << endl;
                 Dependency_Calc dc(vertex, tid);
                 update_betweenness(dc, vertex);
                 vertex = next_vertex();
