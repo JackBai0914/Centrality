@@ -167,13 +167,13 @@ int main(int argc, char *argv[]) {
         chkmax(bg, betweenness[i]);
     
     cerr << TIME << endl;
-    // printf("[");
-    // for (int i = 1; i <= n; i ++)
-    //     if (exi[i]) {
-    //         printf("(%d,%.2lf)", i - 1, betweenness[i] / bg);
-    //             if (i != n)
-    //                 printf(",");
-    //     }
-    // printf("]");
+    printf("[");
+    for (int i = 1; i <= n; i ++)
+        if (exi[i]) {
+            printf("(%d,%.2lf)", i - 1, betweenness[i] / bg);
+                if (i != n)
+                    printf(",");
+        }
+    printf("]");
     return 0;
 }
