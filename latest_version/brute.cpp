@@ -76,9 +76,10 @@ struct Dependency_Calc {
         q.resize(n+1);
         pred.resize(n+1);
         dis.resize(n+1);
+        pred.resize(n+1);
         for (int i = 0; i <= n; i ++) {
             dis[i] = n + 1;
-            pred.emplace_back();
+            // pred.emplace_back();
         }
         int fr = 1, re = 0, tp = 0, u;
         q[++re] = s, dis[s] = 0, path[s] = 1;
