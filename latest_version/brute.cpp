@@ -60,8 +60,6 @@ bool exi[MAXN];
 vector<int> adj[MAXN];
 double betweenness[MAXN];
 
-int ST[50][MAXN];
-
 struct Dependency_Calc {
 
     vector <double> _d, path;
@@ -69,32 +67,33 @@ struct Dependency_Calc {
     vector <vector<int> > pred;    
     
     Dependency_Calc() {}
-    Dependency_Calc(int _s, int tid) {bfs(_s, ST[tid]);}
+    Dependency_Calc(int _s, int tid) {bfs(_s);}
 
-    void bfs(int s, int *st) {
-        _d.resize(n+1);
-        path.resize(n+1);
-        // st.resize(n+1);
-        q.resize(n+1);
-        dis.resize(n+1);
-        pred.resize(n+1);
-        for (int i = 1; i <= n; i ++)
-            _d[i] = path[i] = 0, dis[i] = n + 1;
-        int fr = 1, re = 0, tp = 0;
-        q[++re] = s, dis[s] = 0, path[s] = 1;
-        while(fr <= re) {
-            int u = q[fr++];
-            st[++tp] = u;
-            for(int v: adj[u]) {
-                if(dis[v] > n) dis[v] = dis[u] + 1, q[++re] = v;
-                if(dis[v] == dis[u] + 1) path[v] += path[u], pred[v].pb(u);
-            }
+    void bfs(int s) {
+        for (int i = 0; i <= n; i ++) {
+            _d.push_back(0);
+            path.push_back(0);
+            st.push_back(0);
+            q.push_back(0);
+            dis.push_back(n+1);
+            pred.emplace_back();
+            dis.push_back(0);
         }
-        while(tp) {
-            int u = st[tp--];
-            for(int v: pred[u]) 
-                _d[v] += path[v] / path[u] * (1 + _d[u]);
-        }
+        // int fr = 1, re = 0, tp = 0;
+        // q[++re] = s, dis[s] = 0, path[s] = 1;
+        // while(fr <= re) {
+        //     int u = q[fr++];
+        //     st[++tp] = u;
+        //     for(int v: adj[u]) {
+        //         if(dis[v] > n) dis[v] = dis[u] + 1, q[++re] = v;
+        //         if(dis[v] == dis[u] + 1) path[v] += path[u], pred[v].pb(u);
+        //     }
+        // }
+        // while(tp) {
+        //     int u = st[tp--];
+        //     for(int v: pred[u]) 
+        //         _d[v] += path[v] / path[u] * (1 + _d[u]);
+        // }
     }
 };
 
