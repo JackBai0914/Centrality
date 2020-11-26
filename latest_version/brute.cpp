@@ -65,7 +65,8 @@ struct Dependency_Calc {
 
     vector <double> _d, path;
     vector <int> st, q, dis;
-    vector <int> pred[MAXN];    
+    // vector <int> pred[MAXN];    
+    vector <vector <int> > pred;    
     
     Dependency_Calc() {}
     Dependency_Calc(int _s) {bfs(_s);}
@@ -178,7 +179,7 @@ int main(int argc, char *argv[]) {
     printf("[");
     for (int i = 1; i <= n; i ++)
         if (exi[i]) {
-            printf("(%d,%.2lf)", i - 1, betweenness[i] / bg);
+            printf("(%d,%.2f)", i - 1, betweenness[i] / bg);
                 if (i != n)
                     printf(",");
         }
