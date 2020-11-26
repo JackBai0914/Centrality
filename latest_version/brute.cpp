@@ -15,7 +15,7 @@
 #include <ctime>
 #define pb push_back
 #define il inline
-#define MAXN 5050
+#define MAXN 20020
 #define eps (1e-6)
 #define TIME (double)clock()/CLOCKS_PER_SEC
 using namespace std;
@@ -35,7 +35,7 @@ namespace IO_opt {
     }
 
     template <typename T> inline void read(T &x, T &y) {
-    	char ch = inputchar(); int f = 1; x = 0;
+        char ch = inputchar(); int f = 1; x = 0;
         while(ch < '0' || ch > '9') {if(ch == '-') f = -1; ch = inputchar();}
         while(ch >= '0' && ch <= '9') x = x*10+ch-'0', ch = inputchar();
         x *= f;
@@ -61,19 +61,24 @@ vector<int> adj[MAXN];
 double betweenness[MAXN];
 
 
+
 struct Dependency_Calc {
-    int s;
-    double _d[MAXN], path[MAXN];
-    int st[MAXN], q[MAXN], dis[MAXN];
-    vector <int> pred[MAXN];
 
+    vector <double> _d, path;
+    vector <int> st, q, dis;
+    vector <int> pred[MAXN];    
+    
     Dependency_Calc() {}
-    Dependency_Calc(int _s) {s = _s;bfs();}
+    Dependency_Calc(int _s) {bfs(_s);}
 
-    void bfs() {
-        // cerr << "dfs: " << s << endl;
+    void bfs(int s) {
+        _d.resize(n+1);
+        path.resize(n+1);
+        st.resize(n+1);
+        q.resize(n+1);
+        dis.resize(n+1);
         for (int i = 1; i <= n; i ++)
-            _d[i] = path[i] = 0, dis[i] = n + 1, pred[i].clear();
+            _d[i] = path[i] = 0, dis[i] = n + 1;
         int fr = 1, re = 0, tp = 0;
         q[++re] = s, dis[s] = 0, path[s] = 1;
         while(fr <= re) {
@@ -88,7 +93,6 @@ struct Dependency_Calc {
             int u = st[tp--];
             for(int v: pred[u]) 
                 _d[v] += path[v] / path[u] * (1 + _d[u]);
-        //     if(u != s) res[u] += _d[u];
         }
     }
 };
@@ -110,11 +114,11 @@ int next_vertex() {
     return vertex;
 }
 
-void update_betweenness(Dependency_Calc& dc) {
+void update_betweenness(Dependency_Calc& dc, int s) {
     lock_guard<mutex> lock(betweenness_mutex);
 
     for (int v = 1; v <= n; v ++) {
-        if (v != dc.s)
+        if (v != s)
             betweenness[v] += dc._d[v];
     }
 }
@@ -124,18 +128,15 @@ void launch_threads() {
         if (exi[i])
             allpt.push_back(i);
     for (int i = 0; i < thread_num; i++) {
-    //     cerr << "launching " << i << endl;
         threads_list.emplace_back([&] () {
             int vertex = next_vertex();
-    //         cerr << "found v " << vertex << endl;
             while(vertex != -1) {
+                // cerr << "calc::: " << tid << " " << vertex << endl;
                 Dependency_Calc dc(vertex);
-                update_betweenness(dc);
-
+                update_betweenness(dc, vertex);
                 vertex = next_vertex();
             }
         });
-    //     cerr << "launched " << i << endl;
     }
 }
 
@@ -143,38 +144,33 @@ void launch_threads() {
 int main(int argc, char *argv[]) {
     thread_num = stoi(argv[1]);
 
-	int u, v;
-	while(inputchar() != ']') {
-		read(u, v), ++u, ++v;
+    int u, v;
+    while(inputchar() != ']') {
+        read(u, v), ++u, ++v;
         exi[u] = exi[v] = true;
-		adj[u].pb(v);
-		chkmax(n, u);
+        adj[u].pb(v);
+        chkmax(n, u);
         chkmax(n, v);
-	}
+    }
 
     launch_threads();
 
- //    cerr << "st join " << threads_list.size() << endl;
-    for (thread& th : threads_list) {
- //        cerr << "find a thread " << endl;
+    for (thread& th : threads_list)
         th.join();
-    }
- //    cerr << "ed join " << endl;
- //    cerr << "test" << endl;
 
 
-	double bg = 0;
-	for (int i = 1; i <= n; i ++)
+    double bg = 0;
+    for (int i = 1; i <= n; i ++)
         chkmax(bg, betweenness[i]);
     
     cerr << TIME << endl;
     printf("[");
-	for (int i = 1; i <= n; i ++)
+    for (int i = 1; i <= n; i ++)
         if (exi[i]) {
             printf("(%d,%.2lf)", i - 1, betweenness[i] / bg);
                 if (i != n)
                     printf(",");
         }
     printf("]");
-	return 0;
+    return 0;
 }
