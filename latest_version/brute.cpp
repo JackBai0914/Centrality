@@ -70,14 +70,14 @@ struct Dependency_Calc {
     Dependency_Calc(int _s, int tid) {bfs(_s);}
 
     void bfs(int s) {
+        _d.resize(n+1);
+        path.resize(n+1);
+        st.resize(n+1);
+        q.resize(n+1);
+        dis.resize(n+1);
         for (int i = 0; i <= n; i ++) {
-            _d.push_back(0);
-            path.push_back(0);
-            st.push_back(0);
-            q.push_back(0);
             dis.push_back(n+1);
             pred.emplace_back();
-            dis.push_back(0);
         }
         int fr = 1, re = 0, tp = 0, u;
         q[++re] = s, dis[s] = 0, path[s] = 1;
