@@ -278,7 +278,7 @@ int main(int argc, char *argv[]) {
 
     launch_threads();
     join_threads();
-
+    // cerr << "TIME: " << TIME << endl;
     print_betweenness();
     return 0;
 }

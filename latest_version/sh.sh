@@ -1,12 +1,16 @@
-time ./brute 1 >ans.txt <$1
-time ./brute 2 >ans.txt <$1
-time ./brute 4 >ans.txt <$1
-time ./brute 8 >ans.txt <$1
-time ./brute 16 >ans.txt <$1
-time ./brute 24 >ans.txt <$1
-time ./brute 30 >ans.txt <$1
-time ./brute 32 >ans.txt <$1
-time ./brute 48 >ans.txt <$1
-time ./brute 64 >ans.txt <$1
-time ./brute 72 >ans.txt <$1
-time ./brute 96 >ans.txt <$1
+g++ gen.cpp -o gen -O2
+./compile.sh
+g++ ac.cpp -o ac -O2 -std=c++11
+
+while true;do
+	./gen >input.in
+	time ./run.sh input.in
+	time ./ac
+if diff ac.out ans.txt
+then
+	echo 'AC'
+else
+	echo 'WA'
+	exit
+fi
+done
