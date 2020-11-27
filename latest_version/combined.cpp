@@ -15,6 +15,8 @@
 #include <ctime>
 using namespace std;
 
+#define double long double
+
 #define MAXN 12500
 const double eps = 1e-8;
 /////////////GRAPH////////////////
@@ -31,6 +33,9 @@ public:
     }
 
     void add_edge(int from, int to) {
+        if (from > MAXN || to > MAXN) {
+            cerr << "the graph size is more than " << MAXN << endl;
+        }
         graph_[from].push_back(to);
         has_edges_[from] = has_edges_[to] = true;
     }
@@ -245,7 +250,6 @@ void join_threads() {
 }
 
 void print_betweenness() {
-
     double mn = 0, mx = 0;
     for (int vertex = 0; vertex <= MAXN; vertex++)
         if (graph.has_edges(vertex))
@@ -254,7 +258,6 @@ void print_betweenness() {
     printf("[");
 
     bool if_first = true;
-
     for (int vertex = 0; vertex <= MAXN; vertex++) 
         if (graph.has_edges(vertex)) {
             double ans = (betweenness[vertex] - mn) / (mx - mn) + eps;
@@ -262,7 +265,7 @@ void print_betweenness() {
                 if_first = false;
             else
                 printf(",");
-            printf("(%d,%.2f)", vertex, 0.01 * round(ans * 100));
+            printf("(%d,%.2Lf)", vertex, 0.01 * round(ans * 100 + eps));
         }
     printf("]");
 }
