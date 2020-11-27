@@ -132,11 +132,11 @@ private:
     vector<double> dependency_; // delta
 
     void init_() {
+        dependency_.resize(MAXN+1);
+        shortest_paths_.resize(MAXN+1);
         for (int vertex = 0; vertex <= MAXN; vertex++) {
             shortest_path_predecessors_.emplace_back();
-            shortest_paths_.push_back(0);
             distance_.push_back(-1);
-            dependency_.push_back(0);
         }
 
         shortest_paths_[vertex_] = 1;
