@@ -65,7 +65,7 @@ namespace IO_opt {
 } using namespace IO_opt;
 int n, m;
 int main() {
-	n = 12000, m = 70000;
+	n = 12500, m = 70000;
 	srand(time(0) ^ (unsigned int)(ull)(new char));
 	cout << "[";
 	rep(i, 1, m) printf("(%d,%d)", rand()%n, rand()%n), cout << ",]"[i==m];
