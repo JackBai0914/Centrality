@@ -15,7 +15,7 @@
 #include <ctime>
 #define pb push_back
 #define il inline
-#define MAXN 20020
+#define MAXN 13000
 #define TIME (double)clock()/CLOCKS_PER_SEC
 using namespace std;
 template <typename T> il bool chkmin(T &x, T y) {return x > y ? x = y, 1 : 0;}
@@ -65,8 +65,8 @@ struct Dependency_Calc {
 
     vector <double> _d, path;
     vector <int> st, q, dis;
-    // vector <int> pred[MAXN];    
-    vector <vector <int> > pred;    
+    vector <int> pred[MAXN];    
+    // vector <vector <int> > pred;    
     
     Dependency_Calc() {}
     Dependency_Calc(int _s) {bfs(_s);}
@@ -77,8 +77,11 @@ struct Dependency_Calc {
         st.resize(n+1);
         q.resize(n+1);
         dis.resize(n+1);
-        for (int i = 1; i <= n; i ++)
-            _d[i] = path[i] = 0, dis[i] = n + 1;
+        // for (int i = 1; i <= n; i ++)
+            // pred.push_back(vector<int>());
+        for (int i = 1; i <= n; i ++) {
+            dis[i] = n + 1;
+        }
         int fr = 1, re = 0, tp = 0;
         q[++re] = s, dis[s] = 0, path[s] = 1;
         while(fr <= re) {
@@ -160,13 +163,11 @@ int main(int argc, char *argv[]) {
     }
     mxp = n;
 
-    cerr << "after input: " << TIME << endl;
 
     launch_threads();
 
     for (thread& th : threads_list)
         th.join();
-    cerr << "after calculation: " << TIME << endl;
 
 
     double bg = 0;
@@ -179,7 +180,7 @@ int main(int argc, char *argv[]) {
     printf("[");
     for (int i = 1; i <= n; i ++)
         if (exi[i]) {
-            printf("(%d,%.2f)", i - 1, betweenness[i] / bg);
+            printf("(%d,%.2lf)", i - 1, betweenness[i] / bg);
                 if (i != n)
                     printf(",");
         }

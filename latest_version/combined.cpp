@@ -15,70 +15,37 @@
 #include <ctime>
 using namespace std;
 
-typedef double ld;
-const ld eps = 1e-9;
+#define MAXN 12500
+const double eps = 1e-8;
 /////////////GRAPH////////////////
 #ifndef GRAPH_H
 #define GRAPH_H
-
-
 class Graph {
 public:
-    Graph() : vertices_(), graph_(), number_vertices_(0) {}
-
-    void add_vertex(int vertex) {
-        if (vertices_.find(vertex) == vertices_.end()) {
-            vertices_.insert(vertex);
-            orderable_vertices_.push_back(vertex);
-
+    Graph() {
+        for (int i = 0; i <= MAXN; i ++) {
+            vertices_.insert(i);
             graph_.push_back(vector<int>());
-            has_out_edges_.push_back(false);
-            number_vertices_++;
+            has_edges_.push_back(false);
         }
     }
 
     void add_edge(int from, int to) {
-        graph_[mapped_to_[from]].push_back(mapped_to_[to]);
-        has_out_edges_[mapped_to_[from]] = true;
-    }
-
-    void done_with_vertices() {
-        sort_vertices_();
-        map_vertices_();
-    }
-
-    int get_number_vertices() const {
-        return number_vertices_;
+        graph_[from].push_back(to);
+        has_edges_[from] = has_edges_[to] = true;
     }
 
     const vector<int>& get_neighbors(int vertex) const {
         return graph_[vertex];
     }
 
-    bool has_out_edges(int vertex) const {
-        return has_out_edges_[vertex];
-    }
-
-    int get_real_vertex(int vertex) const {
-        return orderable_vertices_[vertex];
+    bool has_edges(int vertex) const {
+        return has_edges_[vertex];
     }
 private:
     unordered_set<int> vertices_;
-    vector<int> orderable_vertices_;
     vector<vector<int>> graph_;
-    vector<bool> has_out_edges_;
-    unordered_map<int, int> mapped_to_;
-    int number_vertices_;
-
-    void sort_vertices_() {
-        sort(orderable_vertices_.begin(), orderable_vertices_.end());
-    }
-
-    void map_vertices_() {
-        for (int i = 0; i < number_vertices_; i++) {
-            mapped_to_[orderable_vertices_[i]] = i;
-        }
-    }
+    vector<bool> has_edges_;
 };
 
 #endif
@@ -120,54 +87,18 @@ namespace IO_opt {
     #undef I_int
 } using namespace IO_opt;
 
+Graph graph;
+
 class Parser {
 public:
-    Parser() : graph_() {
+    Parser() {
         int u, v;
         while(inputchar() != ']') {
             read(u, v);
-            // cerr << "input: " << u << " " << v << endl;
-            edges_.push_back(pair<int, int>(u, v));
-        }
-        add_vertices_();
-        add_edges_();
-    }
-
-    const Graph& get_graph() {
-        return graph_;
-    }
-private:
-    Graph graph_;
-    vector<pair<int, int>> edges_;
-
-    void parse_edge_(string edge) {
-        stringstream sstream(edge);
-
-        string s;
-        cin >> s;
-
-        int from, to;
-        sstream >> from >> to;
-
-        edges_.push_back(pair<int, int>(from, to));
-    }
-
-    void add_vertices_() {
-        for (auto edge : edges_) {
-            graph_.add_vertex(edge.first);
-            graph_.add_vertex(edge.second);
-        }
-
-        graph_.done_with_vertices();
-    }
-
-    void add_edges_() {
-        for (auto edge : edges_) {
-            graph_.add_edge(edge.first, edge.second);
+            graph.add_edge(u, v);
         }
     }
 };
-
 #endif
 
 ////////////?DC////////////////
@@ -176,29 +107,27 @@ private:
 
 class DependencyCalculator {
 public:
-    DependencyCalculator(const Graph& graph, int vertex) : graph_(graph),
-            vertex_(vertex) {
+    DependencyCalculator(int vertex) : vertex_(vertex) {
         init_();
         find_shortest_paths_();
         calculate_dependencies_();
     }
 
-    ld get_dependency(int vertex) const {
+    double get_dependency(int vertex) const {
         return dependency_[vertex];
     }
 private:
-    const Graph& graph_; // (V, E)
     int vertex_; // s
 
     stack<int> stack_; // S
-    vector<vector<int>> shortest_path_predecessors_; // P
+    vector<vector<int> > shortest_path_predecessors_; // P
     vector<int> shortest_paths_; // sigma
     vector<int> distance_; // d
     queue<int> queue_; // Q
-    vector<ld> dependency_; // delta
+    vector<double> dependency_; // delta
 
     void init_() {
-        for (int vertex = 0; vertex < graph_.get_number_vertices(); vertex++) {
+        for (int vertex = 0; vertex <= MAXN; vertex++) {
             shortest_path_predecessors_.emplace_back();
             shortest_paths_.push_back(0);
             distance_.push_back(-1);
@@ -216,7 +145,7 @@ private:
             queue_.pop();
             stack_.push(vertex);
 
-            for (int neighbor : graph_.get_neighbors(vertex)) {
+            for (int neighbor : graph.get_neighbors(vertex)) {
                 if (distance_[neighbor] < 0) {
                     queue_.push(neighbor);
                     distance_[neighbor] = distance_[vertex] + 1;
@@ -231,14 +160,15 @@ private:
     }
 
     void calculate_dependencies_() {
+        double shortest_path_ratio;
         while (!stack_.empty()) {
             int vertex = stack_.top();
             stack_.pop();
 
             for (int predecessor : shortest_path_predecessors_[vertex]) {
-                ld shortest_path_ratio =
-                    (ld) shortest_paths_[predecessor] /
-                    (ld) shortest_paths_[vertex];
+                shortest_path_ratio =
+                    (double) shortest_paths_[predecessor] /
+                    (double) shortest_paths_[vertex];
                 dependency_[predecessor] +=
                     shortest_path_ratio * (1 + dependency_[vertex]);
             }
@@ -248,13 +178,9 @@ private:
 
 #endif
 
-
-
-
 int threads;
 
-Graph graph;
-vector<ld> betweenness;
+vector<double> betweenness;
 queue<int> vertices_to_process;
 
 vector<thread> threads_list;
@@ -268,14 +194,14 @@ void parse_args(int argc, char *argv[]) {
 
 void parse_input() {
     Parser parser;
-    graph = parser.get_graph();
 }
 
 void init() {
-    for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
+    for (int vertex = 0; vertex <= MAXN; vertex++)
         betweenness.push_back(0);
-        vertices_to_process.push(vertex);
-    }
+    for (int vertex = 0; vertex <= MAXN; vertex++)
+        if (graph.has_edges(vertex))
+            vertices_to_process.push(vertex);
 }
 
 int next_vertex() {
@@ -294,12 +220,9 @@ int next_vertex() {
 void update_betweenness(int vertex, DependencyCalculator& dc) {
     lock_guard<mutex> lock(betweenness_mutex);
 
-    for (int v = 0; v < graph.get_number_vertices(); v++) {
-        if (v != vertex) {
-            ld pans = dc.get_dependency(v);
-            betweenness[v] += pans;
-        }
-    }
+    for (int v = 0; v <= MAXN; v++)
+        if (v != vertex)
+            betweenness[v] += dc.get_dependency(v);
 }
 
 void launch_threads() {
@@ -307,9 +230,8 @@ void launch_threads() {
         threads_list.emplace_back([&] () {
             int vertex = next_vertex();
             while(vertex != -1) {
-                DependencyCalculator dc(graph, vertex);
+                DependencyCalculator dc(vertex);
                 update_betweenness(vertex, dc);
-
                 vertex = next_vertex();
             }
         });
@@ -324,18 +246,24 @@ void join_threads() {
 
 void print_betweenness() {
 
-    ld mn = 1e12, mx = 0;
-    for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
-            mn = min(mn, betweenness[vertex]);
+    double mn = 0, mx = 0;
+    for (int vertex = 0; vertex <= MAXN; vertex++)
+        if (graph.has_edges(vertex))
             mx = max(mx, betweenness[vertex]);
-    }
+
     printf("[");
-    for (int vertex = 0; vertex < graph.get_number_vertices(); vertex++) {
-        ld ans = (betweenness[vertex] - mn) / (mx - mn) + eps;
-        printf("(%d,%.2f)", graph.get_real_vertex(vertex), 0.01 * round(ans * 100));
-        if (vertex + 1 != graph.get_number_vertices())
-            cout << ',';
-    }
+
+    bool if_first = true;
+
+    for (int vertex = 0; vertex <= MAXN; vertex++) 
+        if (graph.has_edges(vertex)) {
+            double ans = (betweenness[vertex] - mn) / (mx - mn) + eps;
+            if (if_first)
+                if_first = false;
+            else
+                printf(",");
+            printf("(%d,%.2f)", vertex, 0.01 * round(ans * 100));
+        }
     printf("]");
 }
 
@@ -348,6 +276,6 @@ int main(int argc, char *argv[]) {
     launch_threads();
     join_threads();
 
-    // print_betweenness();
+    print_betweenness();
     return 0;
 }
