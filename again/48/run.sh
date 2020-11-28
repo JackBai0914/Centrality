@@ -1,0 +1,1 @@
+./combine 48 >ans.txt <$1

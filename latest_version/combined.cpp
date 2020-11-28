@@ -265,6 +265,7 @@ void print_betweenness() {
                 if_first = false;
             else
                 printf(",");
+            // cerr << vertex << " " << 0.01 * round(ans * 100 + eps) << '\n';
             printf("(%d,%.2Lf)", vertex, 0.01 * round(ans * 100 + eps));
         }
     printf("]");
