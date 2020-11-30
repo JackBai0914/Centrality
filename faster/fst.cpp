@@ -133,16 +133,16 @@ int main() {
 		exi[u] = exi[v] = 1;
 		chkmax(n, u), chkmax(n, v);
 	}
-	cerr << "finish input" << endl;
+	// cerr << "finish input" << endl;
 	// rep(i, 1, n) read(u, v), adj[u].pb(v);
 	rep(i, 1, n) {
 		solve(i);
-		cerr << "solving " << i << endl;	
+		// cerr << "solving " << i << endl;	
 	} 
 	double bg = 0;
 	rep(i, 1, n) chkmax(bg, bet[i]);
 	putchar('[');
 	rep(i, 1, n) if(exi[i]) printf("(%d,%.2lf)", i-1, bet[i] / bg), cout << ",]"[i == n];
-	puts("");
+	// puts("");
 	return 0;
 }
