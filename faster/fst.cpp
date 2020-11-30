@@ -126,6 +126,7 @@ void solve(int s) {
 int exi[MAXN];
 int main() {
 	// omp_set_num_threads(48);
+	cerr << "thread: " << std::thread::hardware_concurrency() << endl;
 	int u, v;
 	while(inputchar() != ']') {
 		read(u, v), ++u, ++v;
