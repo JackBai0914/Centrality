@@ -1,0 +1,1 @@
+g++ -std=c++11 fst.cpp -O3 -o fst -lpthread -Xpreprocessor -fopenmp
