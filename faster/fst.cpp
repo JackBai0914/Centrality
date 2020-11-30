@@ -83,7 +83,7 @@ void solve(int s) {
 		// #pragma omp parallel for
 		for (int i = 0; i < q_cnt[phase]; i++) {
 			int u = f[i];
-			#pragma omp parallel for
+			// #pragma omp parallel for
 			for(int j = 1; j <= deg[u]; j++) {
 				int v = link[u][j];
 				int p, dv = -1;
