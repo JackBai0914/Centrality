@@ -65,7 +65,7 @@ namespace IO_opt {
 int n, m;
 map <pii, bool> mp;
 int main() {
-	n = 5, m = 8;
+	n = 5000, m = 8000;
 	srand(time(0) ^ (unsigned int)(ull)(new char));
 	cout << "[";
 	rep(i, 1, m) {

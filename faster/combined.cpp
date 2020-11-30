@@ -11,7 +11,7 @@
 #include <vector>
 #include <queue>
 #include <ctime>
-#define MAXN 12510
+#define MAXN 12500
 #define MAXT 50
 #define MAXD 16
 #define TIME (double)clock()/CLOCKS_PER_SEC
@@ -77,34 +77,43 @@ public:
 
 ////////////DC////////////////
 
+long long num = 0;
 
 short stack[MAXT][MAXN], tp[MAXT];
 short dist[MAXT][MAXN];
 short que[MAXT][MAXN], qst[MAXT], qed[MAXT];
-short shortest_paths[MAXT][MAXN];
+int shortest_paths[MAXT][MAXN];
 double dependency[MAXT][MAXN];
 short shortest_path_predecessors[MAXT][MAXN][MAXD], sppst[MAXT][MAXN];
 bool if_vis[MAXT][MAXN];
 
 class DependencyCalculator {
 public:
-    DependencyCalculator(short vt, short tid): vertex_(vt), tid(tid){
-        // init_();
-        memset(shortest_paths[tid], 0, sizeof shortest_paths[tid]);
-        memset(dist[tid], 0, sizeof dist[tid]);
-        memset(sppst[tid], 0, sizeof sppst[tid]);
-        memset(dependency[tid], 0, sizeof dependency[tid]);
-        memset(if_vis[tid], false, sizeof if_vis[tid]);
+    DependencyCalculator(short vertex, short tid): vertex_(vertex), tid(tid){
+        init_();
+        find_shortest_paths_();
+        calculate_dependencies_();
+    }
+    short vertex_, tid;
+private:
+    void init_() {
+        for (short vertex = 0; vertex < MAXN; vertex++) {
+            shortest_paths[tid][vertex] = 0;
+            dist[tid][vertex] = 0;
+            sppst[tid][vertex] = 0;
+            dependency[tid][vertex] = 0;
+            if_vis[tid][vertex] = false;
+        }
 
         shortest_paths[tid][vertex_] = 1;
         dist[tid][vertex_] = 1;
         if_vis[tid][vertex_] = true;
         qed[tid] = 0, qst[tid] = 1;
         que[tid][++ qed[tid]] = vertex_;
+    }
 
-
-        // find_shortest_paths_();
-        short vertex, i, neighbor, predecessor;
+    void find_shortest_paths_() {
+        short vertex, i, neighbor;
         while (qst[tid] <= qed[tid]) {
             vertex = que[tid][qst[tid] ++];
             
@@ -116,45 +125,29 @@ public:
                     que[tid][++ qed[tid]] = neighbor;
                     if_vis[tid][neighbor] = true;
                     dist[tid][neighbor] = dist[tid][vertex] + 1;
-                    // shortest_paths[tid][neighbor] += shortest_paths[tid][vertex];
-                    // shortest_path_predecessors[tid][neighbor][++ sppst[tid][neighbor]] = vertex;
+                    shortest_paths[tid][neighbor] += shortest_paths[tid][vertex];
+                    shortest_path_predecessors[tid][neighbor][++ sppst[tid][neighbor]] = vertex;
                 }
 
-                if (dist[tid][neighbor] == dist[tid][vertex] + 1) {
-                    // num2 ++;
+                else if (dist[tid][neighbor] == dist[tid][vertex] + 1) {
                     shortest_paths[tid][neighbor] += shortest_paths[tid][vertex];
                     shortest_path_predecessors[tid][neighbor][++ sppst[tid][neighbor]] = vertex;
                 }
             }
         }
+    }
 
-
-        // calculate_dependencies_();
-        // short vertex, i, predecessor;
-        double contri;
+    void calculate_dependencies_() {
+        short vertex, i, predecessor;
         while (tp[tid]) {
             vertex = stack[tid][tp[tid] --];
-            dependency[tid][vertex] *= shortest_paths[tid][vertex];
-            // mx = max (mx, shortest_paths[tid][vertex]);
-            contri = (1 + dependency[tid][vertex]) / shortest_paths[tid][vertex];
-            for (i = 1; i <= sppst[tid][vertex]; i ++)
-                dependency[tid][shortest_path_predecessors[tid][vertex][i]] += contri;
-                    // shortest_paths[tid][shortest_path_predecessors[tid][vertex][i]] * ;
+            for (i = 1; i <= sppst[tid][vertex]; i ++) {
+                predecessor = shortest_path_predecessors[tid][vertex][i];
+                dependency[tid][predecessor] +=
+                    shortest_paths[tid][predecessor] * (1 + dependency[tid][vertex]) / shortest_paths[tid][vertex];
+            }
         }
     }
-    short vertex_, tid;
-// private:
-//     void init_() {
-        
-//     }
-
-//     void find_shortest_paths_() {
-        
-//     }
-
-//     void calculate_dependencies_() {
-        
-//     }
 };
 
 
@@ -176,26 +169,32 @@ void parse_input() {
 }
 
 void init() {
-    for (short vertex = 0; vertex < MAXN; vertex++) 
+    for (int vertex = 0; vertex < MAXN; vertex++) 
         if (exist[vertex]) {
             betweenness.push_back(0);
             vertices_to_process[++ vtpst] = vertex;
         }
 }
 
-short tmp[10000], tst = 0;
+short tmp[100000], tst = 0;
+short v_belong_t[MAXN];
 
 short next_vertex(short &tid) {
     lock_guard<mutex> lock(queue_mutex);
-    tid = hash<thread::id>{}(this_thread::get_id()) % 10000;
-    if (!tmp[tid])
-        tmp[tid] = ++ tst;
-    tid = tmp[tid];
+
+    int htid = hash<thread::id>{}(this_thread::get_id()) % 100000;
+
+    if (!tmp[htid])
+        tmp[htid] = ++ tst;
+    tid = tmp[htid];
 
     if (vtpst == 0) {
         return -1;
     }
-    return vertices_to_process[vtpst --];
+
+    short vertex = vertices_to_process[vtpst --];
+    v_belong_t[vertex] = tid;
+    return vertex;
 }
 
 void update_betweenness(int vertex, DependencyCalculator& dc) {
@@ -239,7 +238,7 @@ void print_betweenness() {
         if (exist[vertex]) {
             if (!ini)
                 cout << ',';
-            cout << '(' << vertex << ',' << betweenness[vertex] << ')';
+            cout << '(' << vertex << ',' << (double)(betweenness[vertex] - mn) / (mx- mn) << ')';
             ini = false;
         }
     }
@@ -255,12 +254,12 @@ int main(int argc, char *argv[]) {
     parse_args(argc, argv);
     parse_input();
     init();
-    // cerr << "mid: " << TIME << endl;
+    cerr << "mid: " << TIME << endl;
     launch_threads();
     join_threads();
 
     print_betweenness();
-    // cerr << "time " << TIME << endl;
-    // cerr << "mx: " << mx << endl;
+    cerr << "time " << TIME << endl;
+    // cerr << "num: " << num << endl;
     return 0;
 }
