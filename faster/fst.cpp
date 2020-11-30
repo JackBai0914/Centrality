@@ -69,7 +69,7 @@ int n, link[MAXN][30], deg[MAXN];
 atomic<int> dis[MAXN], path[MAXN], suc_cnt[MAXN], q_cnt[MAXN];
 int q[130][MAXN], suc[MAXN][30];
 double _d[MAXN], bet[MAXN];
-const size_t nthreads = std::thread::hardware_concurrency();
+const size_t nthreads = std::thread::hardware_concurrency() / 4;
 void solve(int s) {
 	atomic<int> phase;
 	// atomic<int> p, dv;
@@ -126,7 +126,7 @@ void solve(int s) {
 int exi[MAXN];
 int main() {
 	// omp_set_num_threads(48);
-	cerr << "thread: " << std::thread::hardware_concurrency() << endl;
+	cerr << "thread: " << std::thread::hardware_concurrency() / 4 << endl;
 	int u, v;
 	while(inputchar() != ']') {
 		read(u, v), ++u, ++v;
