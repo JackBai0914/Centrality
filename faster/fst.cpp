@@ -80,7 +80,7 @@ void solve(int s) {
 	while(q_cnt[phase] > 0) {
 		int *f = q[phase], *g = q[phase + 1];
 		// cout << "Phase " << phase << endl;
-		#pragma omp parallel for
+		// #pragma omp parallel for
 		for (int i = 0; i < q_cnt[phase]; i++) {
 			int u = f[i];
 			#pragma omp parallel for
@@ -99,7 +99,7 @@ void solve(int s) {
 	--phase;
 	while(phase > 0) {
 		--phase;
-		#pragma omp parallel for
+		// #pragma omp parallel for
 		for(int i = 0; i < q_cnt[phase]; i++) {
 			int u = q[phase][i];
 			for(int j = 0; j < suc_cnt[u]; j++) {
@@ -113,7 +113,7 @@ void solve(int s) {
 }
 int exi[MAXN];
 int main() {
-	omp_set_num_threads(24);
+	// omp_set_num_threads(24);
 	int u, v;
 	while(inputchar() != ']') {
 		read(u, v), ++u, ++v;
