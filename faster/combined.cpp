@@ -239,7 +239,7 @@ void print_betweenness() {
         if (exist[vertex]) {
             if (!ini)
                 cout << ',';
-            cout << '(' << vertex << ',' << (double)(betweenness[vertex] - mn) / (mx- mn) << ')';
+            cout << '(' << vertex << ',' << betweenness[vertex] << ')';
             ini = false;
         }
     }
