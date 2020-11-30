@@ -134,10 +134,22 @@ int main() {
         if (exi[i]) {
             if (!ini)
                 cout << ',';
-            cout << '(' << i-1 << ',' << bet[i] / mx << ')';
+            cout << '(' << i-1 << ',' << bet[i] / bg << ')';
             ini = false;
         }
     }
     cout << ']';
+
+	// double bg = 0;
+	// rep(i, 1, n) chkmax(bg, bet[i]);
+	// putchar('[');
+ //    cerr << fixed << setprecision(10);
+
+	// // cerr << bg << endl;
+	// // rep (i, 1, n)
+	// // 	if (i == 362)
+	// // 		cerr << bet[i] << " " << bg << " " << bet[i] / bg << " " << bet[i] / bg + eps << endl;
+	// rep(i, 1, n) if(exi[i]) printf("(%d,%.2f)", i-1, bet[i] / bg + eps), cout << ",]"[i == n];
+	// rep(i, 1, n) if(exi[i]) printf("(%d,%.2lf)", i-1, bet[i]), cout << ",]"[i == n];
 	return 0;
 }
