@@ -134,7 +134,7 @@ int main() {
         if (exi[i]) {
             if (!ini)
                 cout << ',';
-            cout << '(' << i-1 << ',' << bet[i] / bg << ')';
+            cout << '(' << i-1 << ',' << bet[i] / mx << ')';
             ini = false;
         }
     }
