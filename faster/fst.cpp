@@ -133,8 +133,12 @@ int main() {
 		exi[u] = exi[v] = 1;
 		chkmax(n, u), chkmax(n, v);
 	}
+	cerr << "finish input" << endl;
 	// rep(i, 1, n) read(u, v), adj[u].pb(v);
-	rep(i, 1, n) solve(i);
+	rep(i, 1, n) {
+		solve(i);
+		cerr << "solving " << i << endl;	
+	} 
 	double bg = 0;
 	rep(i, 1, n) chkmax(bg, bet[i]);
 	putchar('[');
