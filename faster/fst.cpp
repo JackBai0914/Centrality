@@ -80,10 +80,10 @@ void solve(int s) {
 	while(q_cnt[phase] > 0) {
 		int *f = q[phase], *g = q[phase + 1];
 		// cout << "Phase " << phase << endl;
-		// #pragma omp parallel for
+		#pragma omp parallel for
 		for (int i = 0; i < q_cnt[phase]; i++) {
 			int u = f[i];
-			// #pragma omp parallel for
+			#pragma omp parallel for
 			for(int j = 1; j <= deg[u]; j++) {
 				int v = link[u][j];
 				int p, dv = -1;
@@ -99,7 +99,7 @@ void solve(int s) {
 	--phase;
 	while(phase > 0) {
 		--phase;
-		// #pragma omp parallel for
+		#pragma omp parallel for
 		for(int i = 0; i < q_cnt[phase]; i++) {
 			int u = q[phase][i];
 			for(int j = 0; j < suc_cnt[u]; j++) {
@@ -113,7 +113,7 @@ void solve(int s) {
 }
 int exi[MAXN];
 int main() {
-	// omp_set_num_threads(24);
+	omp_set_num_threads(24);
 	int u, v;
 	while(inputchar() != ']') {
 		read(u, v), ++u, ++v;
@@ -139,17 +139,5 @@ int main() {
         }
     }
     cout << ']';
-
-	// double bg = 0;
-	// rep(i, 1, n) chkmax(bg, bet[i]);
-	// putchar('[');
- //    cerr << fixed << setprecision(10);
-
-	// // cerr << bg << endl;
-	// // rep (i, 1, n)
-	// // 	if (i == 362)
-	// // 		cerr << bet[i] << " " << bg << " " << bet[i] / bg << " " << bet[i] / bg + eps << endl;
-	// rep(i, 1, n) if(exi[i]) printf("(%d,%.2f)", i-1, bet[i] / bg + eps), cout << ",]"[i == n];
-	// rep(i, 1, n) if(exi[i]) printf("(%d,%.2lf)", i-1, bet[i]), cout << ",]"[i == n];
 	return 0;
 }
