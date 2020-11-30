@@ -67,7 +67,7 @@ namespace IO_opt {
 } using namespace IO_opt;
 int n, link[MAXN][30], deg[MAXN];
 atomic<int> dis[MAXN], path[MAXN], suc_cnt[MAXN], q_cnt[MAXN];
-int q[13][MAXN], suc[MAXN][30];
+int q[130][MAXN], suc[MAXN][30];
 double _d[MAXN], bet[MAXN];
 const size_t nthreads = std::thread::hardware_concurrency();
 void solve(int s) {
@@ -75,7 +75,7 @@ void solve(int s) {
 	// atomic<int> p, dv;
 	phase = 0;
 	for(int i = 1; i <= n; i++) _d[i] = path[i] = 0, dis[i] = -1, suc_cnt[i] = 0;
-	for(int i = 0; i <= 13; i++) q_cnt[i] = 0;
+	for(int i = 0; i <= 130; i++) q_cnt[i] = 0;
 	dis[s] = 0, path[s] = 1;
 	q_cnt[phase] = 1, q[phase][0] = s;
 	while(q_cnt[phase] > 0) {
